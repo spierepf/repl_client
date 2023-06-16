@@ -4,8 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+websocket-client = "*"
+pyserial = "*"
 
 [dev-packages]
+pytest-cov = "*"
 
 [requires]
 python_version = "3"
