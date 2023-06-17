@@ -16,6 +16,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "websocket-client",
+    "pyserial"
+]
 
 [project.urls]
 "Homepage" = "https://github.com/spierepf/repl_client"
