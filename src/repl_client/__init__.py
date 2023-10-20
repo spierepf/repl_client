@@ -9,6 +9,9 @@ import serial
 
 
 class BaseReplClient:
+    def _import(self, module_name):
+        self.exec(f"import {module_name}")
+
     def with_timeout(self, timeout, callback):
         previous_timeout = self.get_timeout()
         self.set_timeout(timeout)
@@ -73,13 +76,14 @@ class BaseReplClient:
         return ast.literal_eval(result.decode('utf-8'))
 
     def remove(self, pathname):
+        self._import("uos")
         result, error = self.exec(f"uos.remove('{pathname}')")
         self.assert_error(error)
         return result
 
     def sha256(self, pathname):
         chunk_size = 1024
-        self.exec("import hashlib")
+        self._import("hashlib")
         self.exec("h = hashlib.sha256()")
         self.exec(f"f = open('{pathname}', 'rb')")
 
@@ -91,17 +95,21 @@ class BaseReplClient:
         return self.eval("h.digest()")
 
     def mkdir(self, pathname):
+        self._import("uos")
         result, error = self.exec(f"uos.mkdir('{pathname}')\r\n")
         self.assert_error(error)
         return result
 
     def isfile(self, pathname):
+        self._import("uos")
         return self.eval(f"(uos.stat('{pathname}')[0] & 32768) == 32768")
 
     def isdir(self, pathname):
+        self._import("uos")
         return self.eval(f"(uos.stat('{pathname}')[0] & 16384) == 16384")
 
     def exists(self, pathname):
+        self._import("uos")
         self.exec(f"""
 exists=True
 try:
@@ -109,9 +117,10 @@ try:
 except:
   exists=False
 """)
-        return self.eval('exists')
+        return self.eval("exists")
 
     def listdir(self, pathname='/'):
+        self._import("uos")
         return self.eval(f"uos.listdir('{pathname}')")
 
     def close(self):
@@ -263,26 +272,26 @@ class SerialReplClient(BaseReplClient):
         return content
 
     def configure_wifi(self, ssid, psk):
-        self.exec('import network')
-        self.exec('sta_if = network.WLAN(network.STA_IF)')
+        self._import("network")
+        self.exec("sta_if = network.WLAN(network.STA_IF)")
 
-        if not self.eval('sta_if.active()'):
-            self.exec('sta_if.active(True)')
+        if not self.eval("sta_if.active()"):
+            self.exec("sta_if.active(True)")
 
-        if self.eval('sta_if.isconnected()') and self.eval('sta_if.config("essid")') != ssid:
-            self.exec('sta_disconnect()')
+        if self.eval("sta_if.isconnected()") and self.eval("sta_if.config('essid')") != ssid:
+            self.exec("sta_disconnect()")
 
-        if not self.eval('sta_if.isconnected()'):
-            self.exec(f'sta_if.connect("{ssid}", "{psk}")')
+        if not self.eval("sta_if.isconnected()"):
+            self.exec(f"sta_if.connect('{ssid}', '{psk}')")
 
-        while not self.eval('sta_if.isconnected()'):
+        while not self.eval("sta_if.isconnected()"):
             time.sleep(0.1)
 
         return self.eval("sta_if.ifconfig()[0]")
 
     def configure_webrepl(self, password):
-        self.exec('import webrepl')
-        self.exec(f'webrepl.start(password="{password}")')
+        self._import("webrepl")
+        self.exec(f"webrepl.start(password='{password}')")
 
 
 class LocalClient:
