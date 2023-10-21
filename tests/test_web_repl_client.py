@@ -2,7 +2,7 @@ import pytest
 import time
 
 from .common import web_client, serial_client
-from .credentials import WIFI_CREDENTIALS
+from .config import WIFI_CREDENTIALS
 
 from .filesystem_suite import test_mkdir, test_isdir, test_isfile, test_listdir, test_remove_dir, test_remove_file, \
     test_put_file, test_put_file_get_file_remove, test_sha256, test_readfile_dne, test_listdir_dne, test_listdir_root, \
