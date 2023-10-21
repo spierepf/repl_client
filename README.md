@@ -8,13 +8,13 @@ The tests are implemented using `pytest`, and need a small amount of local confi
 the tests need to know how to connect to the test device's serial port, and local wifi in order to test
 the websocket implementation of the library.
 
-To configure this, create a file entitled `config.py` inside the `test` directory of the following
-form:
+To configure this, create a file named `config.py` inside the `tests` directory with the following
+content:
 
 ```python
 SERIAL_CONFIG = {
-    'port': '/dev/ttyACM0',
-    'baud': 115200
+    "port": "/dev/ttyACM0",
+    "baud": 115200
 }
 
 WIFI_CREDENTIALS = {
