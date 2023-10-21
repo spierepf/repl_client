@@ -3,10 +3,11 @@ import serial
 import websocket
 
 from .context import repl_client
+from .config import SERIAL_CONFIG
 
 
 @contextmanager
-def serial_client(port="/dev/ttyUSB0", baud=115200):
+def serial_client(port, baud):
     connection = serial.Serial(port, baud)
     retval = repl_client.SerialReplClient(connection)
     yield retval
@@ -15,7 +16,7 @@ def serial_client(port="/dev/ttyUSB0", baud=115200):
 
 @contextmanager
 def web_client(ssid, psk):
-    with serial_client() as _serial_client:
+    with serial_client(SERIAL_CONFIG['port'], SERIAL_CONFIG['baud']) as _serial_client:
         ip = _serial_client.configure_wifi(ssid, psk)
         _serial_client.configure_webrepl('password')
 
